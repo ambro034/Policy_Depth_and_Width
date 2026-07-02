@@ -635,7 +635,7 @@ def add_term_measures(file_name, out):
   #print(df_pivot['Ratio_of_Term'], df_pivot['Terminated_WC'], df_pivot['O_Text_WC'])
 ###########################
 #select output
-  Output_df = Gini_df[['year', 'Term_Gini', 'Term_depth', 'Add_Gini','Add_depth']]
+  Output_df = Gini_df[['year', 'Term_width', 'Term_depth', 'Add_width','Add_depth']]
   if out == 1:
     return(Output_df)
   elif out == 2:
@@ -659,14 +659,14 @@ def plot_term_add(data, width_thresh, depth_thresh):
   data = data.reset_index()
 
   # Produce figure
-  plt.scatter(data['Add_depth'], data['Add_Gini'], facecolors='none', edgecolors='blue', s=40, marker='o') # Plots the line and marks the points
-  plt.scatter(data['Term_depth'], data['Term_Gini'], c='blue', s=40, marker='x') # Plots the line and marks the points
-  plt.plot([data['Term_depth'], data['Add_depth']], [data['Term_Gini'], data['Add_Gini']], '--k', lw=0.5, zorder = -1)
+  plt.scatter(data['Add_depth'], data['Add_width'], facecolors='none', edgecolors='blue', s=40, marker='o') # Plots the line and marks the points
+  plt.scatter(data['Term_depth'], data['Term_width'], c='blue', s=40, marker='x') # Plots the line and marks the points
+  plt.plot([data['Term_depth'], data['Add_depth']], [data['Term_width'], data['Add_width']], '--k', lw=0.5, zorder = -1)
 
   # add year
   for i, txt in enumerate(data['year']):
-    if not math.isnan(data.loc[i, 'Add_depth']) and not math.isnan(data.loc[i, 'Add_Gini']):
-      plt.annotate(txt, (data.loc[i, 'Add_depth']+0.01, data.loc[i, 'Add_Gini']-0.01))
+    if not math.isnan(data.loc[i, 'Add_depth']) and not math.isnan(data.loc[i, 'Add_width']):
+      plt.annotate(txt, (data.loc[i, 'Add_depth']+0.01, data.loc[i, 'Add_width']-0.01))
 
   # Create marker legend
   plot_marker = []
