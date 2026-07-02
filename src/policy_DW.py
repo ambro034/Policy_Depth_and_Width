@@ -8,39 +8,8 @@ import re
 import numpy as np
 
 ##############
-### Set Up ###
+##  Set Up  ##
 ##############
-
-### UPLOAD FROM GOOGLE DRIVE ####
-
-def data_from_GD(file_name,tab_name):
-
-  # mount
-  from google.colab import auth
-  auth.authenticate_user()
-
-  import gspread
-  from google.auth import default
-  creds, _ = default()
-
-  gc = gspread.authorize(creds)
-
-  # real code
-  worksheet = gc.open(file_name).worksheet(tab_name)
-
-  # get_all_values gives a list of rows.
-  rows = worksheet.get_all_values()
-
-  import pandas as pd
-  df_name = pd.DataFrame.from_records(rows)
-
-  df_name.columns = df_name.iloc[0]  # Set the first row as header
-  df_name = df_name[1:]  # Remove the first row from the data
-
-  # Reset the index (optional)
-  df_name.reset_index(drop=True, inplace=True)
-
-  return df_name
 
 ### Dataset Construction ###
 
@@ -66,9 +35,8 @@ def construct_dataset(data,id,new_year,new_year_num,old_year,old_year_num): # da
 
   return dataset[['Statement ID',nyn,oyn]]
 
-
 ##############################
-### Text Reuse Definitions ###
+##  Text Reuse Definitions  ##
 ##############################
 
 ### IDENTIFY REUSE ###
@@ -105,7 +73,6 @@ def id_reuse(str1,str2,l):
   if len(long_answer) >= l:
     return" ".join(long_answer)
 
-
 ### IDENTIFY ALL REUSE ###
 
 def reuse_loops2(str1,str2,l):
@@ -132,7 +99,7 @@ def reuse_loops2(str1,str2,l):
 
     # split phrases string #1
     new_str = []
-    #try: 
+    #try:
     #  if m_str1 == reuse:
     #    print("YES")
     #    new_str.append((reuse,'black'))
@@ -178,7 +145,7 @@ def reuse_loops2(str1,str2,l):
     s = -1
     for s in range(round(int((len(m_str1.split()))/(l)),0)):
 
-      #print('####') 
+      #print('####')
       #print(s)
       #print(new_str)
       #print(old_str)
@@ -361,41 +328,15 @@ def reuse_dataset_to_dataset(data,id,new_year,old_year,l):
     else:
       jac_sim = reuse_wc/(added_wc + reuse_wc + removed_wc)
 
-    # Fill Empty Cells to Make Python Happy
-
-    #if new == "" or new == " " or new == "nan":
-    #  new = "EMPTY"
-
-    #if added == "" or added == " " or added == "nan":
-    #  added = "EMPTY"
-
-    #if reuse == "" or reuse == " " or reuse == "nan":
-    #  reuse = "EMPTY"
-
-    #if removed == "" or removed == " " or removed == "nan":
-    #  removed = "EMPTY"
-
-    #if old == "" or old == " " or old == "nan":
-    #  old = "EMPTY"
-
-    #if added2 == "" or added2 == " " or added2 == "nan":
-    #  added2= "EMPTY"
-
-    #if reuse2 == "" or reuse2 == " " or reuse2 == "nan":
-    #  reuse2 = "EMPTY"
-
-    #if removed2 == "" or removed2 == " " or removed2 == "nan":
-    #  removed2 = "EMPTY"
-
     clean_data = clean_data._append({'Statement ID':id_num,nt:new,ntw: new_wc, na:added, naw: added_wc, nr:reuse, nrw: reuse_wc, nter:removed, nterw: removed_wc, ot:old, otw: old_wc, rmnt: rom_new, rmot: rom_old, njs: jac_sim},ignore_index=True)
   return clean_data
 
-
 ###############
-### MERGING ###
+##  MERGING  ##
 ###############
 
 ### STRAINGHT MERGE ####
+
 def straight_merge(new_df,old_df):
 
   n_suf = "_"+new_df.columns[1][:6]
@@ -406,6 +347,7 @@ def straight_merge(new_df,old_df):
   return matched_df
 
 ### STRAINGHT MERGE Text Only ####
+
 def straight_merge_text_only(new_df,old_df):
 
   small_new_df = new_df.iloc[:, [0,1,3,5,7]]
@@ -418,12 +360,12 @@ def straight_merge_text_only(new_df,old_df):
 
   return matched_df
 
-
-#################################
-### LOOP THROUGH GOOGLE SHEET ###
-#################################
+##########################
+##  LOOP THROUGH SHEET  ##
+##########################
 
 ### SHEET LOOP ####
+
 def sheet_loop(TAB,l):
 
   # get all column headings that contain the text "Stats" and put it into a list
@@ -443,7 +385,7 @@ def sheet_loop(TAB,l):
   return c_prev
 
 ################
-### OUT PUTS ###
+##  OUTPUTS   ##
 ################
 
 ### Print in Color ###
@@ -468,3 +410,295 @@ def reuse_color_coded(str1,str2,l):
 
   print('Old Language:')
   print_color((old_str))
+
+#####################################
+## Patching and Packaging Measures ##
+#####################################
+
+def add_term_measures(file_name, out):
+
+  from IPython import get_ipython
+  from IPython.display import display
+
+  # Mount google drive and go to subfolder
+  # %%
+  #from google.colab import drive
+  #drive.mount('/content/drive')
+  # %%
+  import os
+  import pandas as pd
+  import re
+  import numpy as np
+  import math
+
+###############################
+
+  df = pd.DataFrame(file_name)
+
+# identify strings to identify and keep within variable names
+  pattern = r'(\d{4}).*(N_Text_WC|Added_WC|Terminated_WC|O_Text_WC)'
+  #create empty list to hold column names (columns will be renamed with Year followed by one of the 3 expressions above (Text_WC, Added_WC, Terminated_WC))
+  new_columns = []
+  for col in df.columns:
+    # find columns that match those strings and save to list
+    match = re.search(pattern, col)
+    if match:
+      new_columns.append(f"{match.group(1)}_{match.group(2)}")
+    else:
+      new_columns.append(col)
+
+  #print(new_columns) ### select based on the needed columns not all of the columns.....?
+
+  #update columns in dataframe df to rename variables with names from 'new_columns' list
+  df.columns = new_columns
+  # check output
+  #print("\nModified column names:")
+  #print(df.columns)
+  #print("\nModified DataFrame:")
+  #print(df.head())
+
+
+########################
+#Filter data frame to only keep relevant variables
+  pattern = 'N_Text_WC|Added_WC|Terminated_WC|Statement ID|O_Text_WC'
+  filtered_df = df.filter(regex=pattern, axis=1)
+  filtered_df.head()
+
+#######################
+# Reshape the data to get only 1 variable for each "Terminated_WC" "Added_WC" and "Text_WC" and multiple rows for each statement id (corresponding to different years). The year that was in the variables names will now appear as a new variable.  I keep Text_WC in case we want to weight the statements unequally (by length of the statement) when computing the Gini coefficient over the whole policy for each year.
+  # Melt the DataFrame to long format, specify the content in the name of the variables to extract info about (to populate "year", "Terminated_WC", "Added_WC", and "Text_WC" variables), and specify the id for the statements that are repeated over time and will have multiple observations after reshaping
+  df_melted = pd.melt(filtered_df, id_vars=['Statement ID'], var_name='year_variable', value_name='value')
+
+  #######################
+  # Extract the year and variable name from the 'year_variable' column
+  df_melted['year'] = df_melted['year_variable'].str.extract(r'(\d{4})')  # Extract year
+  df_melted['variable'] = df_melted['year_variable'].str.extract(r'_(.*)')  # Extract the variable name (N_Text_WC, Terminated_WC, Added_WC, O_Text_WC)
+
+  # Drop the 'year_variable' column as it's no longer needed
+  df_melted = df_melted.drop(columns=['year_variable'])
+
+  # Pivot the DataFrame to have separate columns for Terminated_WC, Added_WC, and Text_WC. Save as a new data frame called "df_pivot"
+  df_pivot = df_melted.pivot_table(index=['Statement ID', 'year'], columns='variable', values='value', aggfunc='first').reset_index()
+
+  # Replace missing values (NaN) with 0 (these are for the variables "Added_WC" and "Terminated_WC" in the first year, it is not possible to identify them as a "." if we want to conver the strings containing counts to a numerical format after.
+  df_pivot['Terminated_WC'] = df_pivot['Terminated_WC'].astype(float).fillna(0)
+  df_pivot['Added_WC'] = df_pivot['Added_WC'].astype(float).fillna(0)
+  df_pivot['N_Text_WC'] = df_pivot['N_Text_WC'].astype(float).fillna(0)
+  df_pivot['O_Text_WC'] = df_pivot['O_Text_WC'].astype(float).fillna(0)
+
+  # Convert to integers
+  df_pivot['Terminated_WC'] = df_pivot['Terminated_WC'].astype(int)
+  df_pivot['Added_WC'] = df_pivot['Added_WC'].astype(int)
+  df_pivot['N_Text_WC'] = df_pivot['N_Text_WC'].astype(int)
+  df_pivot['O_Text_WC'] = df_pivot['O_Text_WC'].astype(int)
+
+  # Remove Rows that have no Word Count
+  df_pivot['Text_WC'] = df_pivot['N_Text_WC'] + df_pivot['O_Text_WC']
+  df_pivot = df_pivot[df_pivot['Text_WC'] != 0] # <------------------------------------------------------------------------------------------------- a problem of zeros?
+
+  # Flatten the multi-level columns
+  df_pivot.columns.name = None  # Remove the column name
+  df_pivot = df_pivot.rename(columns={'Terminated_WC': 'Terminated_WC', 'Added_WC': 'Added_WC', 'N_Text_WC': 'N_Text_WC', 'O_Text_WC': 'O_Text_WC'})
+
+  # Print the reshaped DataFrame
+  df_pivot['Total_WC_change'] = df_pivot['Added_WC'] + df_pivot['Terminated_WC']
+
+###################################
+# Compute Termination and Addition Ratios for each statement
+  df_pivot['Ratio_of_Term'] = np.where(df_pivot['O_Text_WC'] > 0 , df_pivot['Terminated_WC'] / (df_pivot['O_Text_WC']), 0 )
+  #df_pivot['Ratio_of_Term'] = df_pivot['Terminated_WC'] / (df_pivot['O_Text_WC'])
+  df_pivot['Ratio_of_Term'] = df_pivot['Ratio_of_Term'].astype(float).fillna(0)
+
+  df_pivot['Ratio_of_Add'] = np.where(df_pivot['N_Text_WC'] > 0 , df_pivot['Added_WC'] / (df_pivot['N_Text_WC'] ), 0 )
+  #df_pivot['Ratio_of_Add'] = df_pivot['Added_WC'] / (df_pivot['N_Text_WC'] )
+  df_pivot['Ratio_of_Add'] = df_pivot['Ratio_of_Add'].astype(float).fillna(0)
+
+###################################
+# Compute the gini coefficient as the relative mean absolute difference. From Wikipedia: "An alternative approach is to define the Gini coefficient as half of the relative mean absolute difference, which is equivalent to the definition based on the Lorenz curve. The mean absolute difference is the average absolute difference of all pairs of items of the population, and the relative mean absolute difference is the mean absolute difference divided by the average, x¯ , to normalize for scale". https://en.wikipedia.org/wiki/Gini_coefficient. I use a simplified formula that exploits the fact that sorting the data in ascending order and taking the difference between the cumulative sum between Xi and Xi-1 is equivalent to taking the absolute differences of all possible pairs of individuals in the set.
+  # Sort the entire DataFrame by 'year' and 'Total_WC_change', in ascending order
+  df_sorted = df_pivot.sort_values(by=['year', 'Total_WC_change'], ascending=[True, True])
+  #Check that it sorted properly
+  #print(df_sorted)
+
+  #### Termination Gini
+  # Add rank within each year based on 'Terminated_WC'
+  df_sorted['Term_rank'] = df_sorted.groupby('year')['Terminated_WC'].rank(method='first', ascending=True)
+  # Print the sorted DataFrame with ranks (rank is the i in the numerator of the formula)
+  #print("\nSorted DataFrame with Ranks:\n", df_sorted)
+  #reset the index year that was created during the reshape of the data
+  df_sorted = df_sorted.reset_index()
+
+  # Create year-specific n and add as a column to data frame
+  df_sorted['n_year'] = df_sorted.groupby('year')['Term_rank'].transform('count')
+  # Calculate the 'cumulative_term' using the new 'n_year' column
+  df_sorted['Term_cumulative_term'] = (2 * df_sorted['Term_rank'] - df_sorted['n_year'] - 1) * df_sorted['Terminated_WC'] ### Should these be negative?
+
+  #### Addition Gini
+  # Add rank within each year based on 'Terminated_WC'
+  df_sorted['Add_rank'] = df_sorted.groupby('year')['Added_WC'].rank(method='first', ascending=True)
+  # Print the sorted DataFrame with ranks (rank is the i in the numerator of the formula)
+  #print("\nSorted DataFrame with Ranks:\n", df_sorted)
+  #reset the index year that was created during the reshape of the data
+  df_sorted = df_sorted.reset_index()
+
+  # Create year-specific n and add as a column to data frame
+  df_sorted['n_year'] = df_sorted.groupby('year')['Add_rank'].transform('count')
+  # Calculate the 'cumulative_term' using the new 'n_year' column
+  df_sorted['Add_cumulative_term'] = (2 * df_sorted['Add_rank'] - df_sorted['n_year'] - 1) * df_sorted['Added_WC'] ### Should these be negative?
+
+
+###############################
+# Create new dataframe to host numerator and denumerato data and to do final Gini coefficient calculation
+
+  #### Termination Gini
+  # Calculate the numerator (sum of 'cumulative_term' for each year)
+  Gini_df = df_sorted.groupby('year')['Term_cumulative_term'].sum().reset_index()
+  # Rename the column to 'numerator'
+  Gini_df = Gini_df.rename(columns={'Term_cumulative_term': 'Term_numerator'})
+  # Calculate the sum of Total_WC_change for each year and add it as a column
+  Gini_df['Term_Sum_Xi'] = df_sorted.groupby('year')['Terminated_WC'].sum().values
+  # calculate the denominator (sum of Xis * n_year)
+  Gini_df['Term_denominator'] = Gini_df['year'].map(df_sorted.groupby('year')['n_year'].first()) * Gini_df['Term_Sum_Xi']
+  # Drop unneeded Sum_Xi variable
+  Gini_df.drop(columns=['Term_Sum_Xi'], inplace=True)
+  # Calculate Gini
+  Gini_df['Term_Gini'] = 1 - (Gini_df['Term_numerator'] / Gini_df['Term_denominator'])
+  # Print the new DataFrame
+
+  #### Addition Gini
+  # Calculate the numerator (sum of 'cumulative_add' for each year)
+  Gini_df['Add_numerator'] = Gini_df['year'].map(df_sorted.groupby('year')['Add_cumulative_term'].sum())
+  # Calculate the sum of Total_WC_change for each year and add it as a column
+  Gini_df['Add_Sum_Xi'] = df_sorted.groupby('year')['Added_WC'].sum().values
+  # calculate the denominator (sum of Xis * n_year)
+  Gini_df['Add_denominator'] = Gini_df['year'].map(df_sorted.groupby('year')['n_year'].first()) * Gini_df['Add_Sum_Xi']
+  # Drop unneeded Sum_Xi variable
+  Gini_df.drop(columns=['Add_Sum_Xi'], inplace=True)
+  # Calculate Gini
+  Gini_df['Add_Gini'] = 1 - (Gini_df['Add_numerator'] / Gini_df['Add_denominator'])
+  # Print the new DataFrame
+  #print(Gini_df)
+
+###############################
+# Add depth of change measures to the new dataframe
+
+  #### Termination Depth
+  # Calculate the sum of 'Ratio_of_Term' for each year
+  Gini_df['Term_sum'] = Gini_df['year'].map(df_sorted.groupby('year')['Ratio_of_Term'].sum())
+  # Calculate the the non zero values of 'Ratio_of_Term' for each year
+  years = Gini_df['year'].to_list()
+  counts = []
+  for year in years:
+    count = ((df_sorted['year'] == year) & (df_sorted['Ratio_of_Term'] > 0) ).sum()
+    counts.append(count)
+  # Map counts back to Gini_df
+  counts_df = pd.DataFrame({'year': years, 'Term_count': counts})
+  Gini_df = pd.merge(Gini_df, counts_df, on='year', how='left')
+
+  # find average depth
+  #if Gini_df['Term_count'] != 0:
+  Gini_df['Term_depth'] = Gini_df['Term_sum'] / Gini_df['Term_count']
+  #else:
+  #  Gini_df['Term_depth'] = 0
+
+
+  #### Addition Depth
+  # Calculate the sum of 'Ratio_of_Add' for each year
+  Gini_df['Add_sum'] = Gini_df['year'].map(df_sorted.groupby('year')['Ratio_of_Add'].sum())
+  # Calculate the the non zero values of 'Ratio_of_Add' for each year
+  years = Gini_df['year'].to_list()
+  counts = []
+  for year in years:
+    count = ((df_sorted['year'] == year) & (df_sorted['Ratio_of_Add'] > 0) ).sum()
+    counts.append(count)
+  # Map counts back to Gini_df
+  counts_df = pd.DataFrame({'year': years, 'Add_count': counts})
+  Gini_df = pd.merge(Gini_df, counts_df, on='year', how='left')
+
+  # find average depth
+  #if Gini_df['Term_count'] != 0:
+  Gini_df['Add_depth'] = Gini_df['Add_sum'] / Gini_df['Add_count']
+  #else:
+  #  Gini_df['Term_depth'] = 0
+
+###########################
+# Fill in unbalanced evolution
+  for p in range(len(Gini_df)):
+    if math.isnan(Gini_df['Term_depth'].iloc[p]) and Gini_df['Add_depth'].iloc[p] > 0:
+      Gini_df.loc[p, 'Term_depth'] = 0
+      Gini_df.loc[p, 'Term_Gini'] = 1
+    if math.isnan(Gini_df['Add_depth'].iloc[p]) and Gini_df['Term_depth'].iloc[p]> 0:
+      Gini_df.loc[p, 'Add_depth'] = 0
+      Gini_df.loc[p, 'Add_Gini'] = 1
+
+###########################
+  #print(df_pivot['Ratio_of_Term'], df_pivot['Terminated_WC'], df_pivot['O_Text_WC'])
+###########################
+#select output
+  Output_df = Gini_df[['year', 'Term_Gini', 'Term_depth', 'Add_Gini','Add_depth']]
+  if out == 1:
+    return(Output_df)
+  elif out == 2:
+    return(df_sorted)
+  else:
+     print("Invalid 'out' input")
+
+
+##############
+## Plotting ##
+##############
+
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+import numpy as np
+import math
+import matplotlib.lines as mlines
+
+def plot_term_add(data, width_thresh, depth_thresh):
+
+  data = data.reset_index()
+
+  # Produce figure
+  plt.scatter(data['Add_depth'], data['Add_Gini'], facecolors='none', edgecolors='blue', s=40, marker='o') # Plots the line and marks the points
+  plt.scatter(data['Term_depth'], data['Term_Gini'], c='blue', s=40, marker='x') # Plots the line and marks the points
+  plt.plot([data['Term_depth'], data['Add_depth']], [data['Term_Gini'], data['Add_Gini']], '--k', lw=0.5, zorder = -1)
+
+  # add year
+  for i, txt in enumerate(data['year']):
+    if not math.isnan(data.loc[i, 'Add_depth']) and not math.isnan(data.loc[i, 'Add_Gini']):
+      plt.annotate(txt, (data.loc[i, 'Add_depth']+0.01, data.loc[i, 'Add_Gini']-0.01))
+
+  # Create marker legend
+  plot_marker = []
+  m1, = plt.plot([], [], 'x', color='black')
+  m2, = plt.plot([], [], 'o', mfc='none', mec='black')
+  plot_marker.append([m1, m2])
+  legend1 = plt.legend(plot_marker[0], ['Termination', 'Addition'], loc=(1.01,0.8),title="Change Type")
+  plt.gca().add_artist(legend1)
+  plt.tight_layout()  # Prevents the legend from getting cut off
+
+  plt.grid(True) # Adds a grid for better visualization
+  plt.xlim(0, 1)  # Set x-axis range
+  plt.ylim(0, 1)  # Set y-axis range
+  plt.xlabel("Average Depth of Evolution \n (Termination and Addition)") # x-axis label
+  plt.ylabel("Concentration of Evolution") # x-axis label
+
+  # Plot Grid and Quadrents
+  plt.xlim(-0.1, 1.1)  # Set x-axis range
+  plt.ylim(-0.1, 1.1)  # Set y-axis range
+  plt.axvline(x=depth_thresh, linewidth=1, color='r', ls='--', zorder = -2)
+  plt.axhline(y=width_thresh, linewidth=1, color='r', ls='--', zorder = -2)
+  plt.xlabel("Average Depth of Evolution \n (Termination and Addition)") # x-axis label
+  plt.ylabel("Width of Evolution") # x-axis label
+
+  # Table #5 Lables
+  x = [-0.05, 1.025,-0.05, 1.025]
+  y = [1.025, 1.025,-0.05,-0.05]
+  labels = ['C', 'D', 'A', 'B']
+
+  # Add labels to each point
+  for i, txt in enumerate(labels):
+    plt.annotate(txt, (x[i], y[i]), c='r',
+             fontsize=12, fontweight='bold')
+
+  plt.show()
