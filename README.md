@@ -1,5 +1,5 @@
 # Policy_Depth_and_Width
-## Python functions for evaluating the the depth and with of policy change.
+## Python functions for evaluating the the depth and with of policy change *IN GOOGLE COLAB*.
 
 Paper Citation: Ambrose, G. and Gregoire-Zawilski, M., Mapping Measurement to Theory in Policy Evolution: A Case of Net Metering Policies of the United States. Policy Studies Journal, https://doi.org/10.1111/psj.70133.
 
@@ -49,8 +49,15 @@ Where:
 
 
 ### Color-coded Reuse Evaluation
+This function returns output such that added text is in green, terminated in red, and maintained in black when comparing the old policy text (i.e., statement 2) to the new policy text (i.e., statement 1).
 
+    reuse_color_coded(s1,s2,l)
 
+Where:
+  - *s1* is the new policy text (i.e., statement 1) to be entered
+  - *s2* is the old policy text (i.e., statement 2) to be entered
+  - *l* is the minimum n-gram length the function is observing (i.e., *l* = 2, two-word chucks)
+    
 ### Construct Reuse Dataset
 
 #### reuse_dataset_to_dataset
@@ -60,9 +67,9 @@ This is a function returns pairs of statements from a dataframe, to a new datafr
 
 Where:
   - *data* is the name of the dataframe
-  - *id* is the column position for Statement IDs in the dataframe
-  - *new_year* is the column position for Statement #1 in the dataframe
-  - *old_year* is the column position for Statement #2 in the dataframe
+  - *id* is ts the column position for Statement #1 in the dataframe
+  - *old_year* ishe column position for Statement IDs in the dataframe
+  - *new_year* i the column position for Statement #2 in the dataframe
   - *l* is the minimum n-gram length the function is observing (i.e., *l* = 2, two-word chucks)
 
 #### sheet_loop
@@ -97,8 +104,69 @@ Where:
 ## Examples
 
 ```
+# Set Up
+!pip install "git+https://github.com/ambro034/Policy_Depth_and_Width.git"
+import policy_DW as dw
 
+import pandas as pd
 
+## Load Data
+# Two Statements from Strings
+s1 = "In this case, the public utilities commission shall consult with the energy commission in calculating market prices and establishing other renewable portfolio standard policies--for this is the right thing."
+s2 = "The public utilities commission shall consult with the energy commission in establishing renewable portfolio standard policies, but this is the right thing."
+
+# Toy Data
+
+url = 'https://github.com/ambro034/Policy_Depth_and_Width/blob/main/fake_data_2.csv?raw=true'
+fake = pd.read_csv(url, encoding = "cp1252")
+fake.info()
+
+# Colorado Net Metering Overtime
+
+url = 'https://github.com/ambro034/Policy_Depth_and_Width/blob/main/Colorado_Net_Metering_Overtime.csv?raw=true'
+COL_NM = pd.read_csv(url, encoding = "cp1252")
+COL_NM.info()
+
+# For reference we can look at the toy dataset 'fake'
+fake
+
+## Construct and Run from Dataframe
+
+mydata = dw.construct_dataset(fake,False,1,2012,2,2011)
+mydata
+
+## Color-coded evaluation
+
+dw.reuse_color_coded(s1,s2,2)
+
+## Construct Reuse Dataframe
+
+fake_data = dw.reuse_dataset_to_dataset(mydata,0,1,2,2)
+fake_data
+
+## Run Loop for multiple comparisons of text reuse
+
+COL_looped_data = dw.sheet_loop(COL_NM,2)
+COL_looped_data
+
+## Consolidated Information Output
+
+COL_out1_AT = dw.add_term_measures(COL_looped_data,1)
+COL_out1_AT
+
+fake_out1_AT = dw.add_term_measures(fake_data,1)
+fake_out1_AT
+
+## Full Information Output
+
+COL_out1_BT = dw.add_term_measures(COL_looped_data,2)
+COL_out1_BT
+
+## Depth and Width Plot
+
+dw.plot_term_add(COL_out1_AT, 0.21,0.5)
+
+dw.plot_term_add(fake_out1_AT, 0.21,0.5)
 
 ```
 
