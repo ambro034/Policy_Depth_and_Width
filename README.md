@@ -103,72 +103,72 @@ Where:
 
 ## Examples
 
-```
-# Set Up
-!pip install "git+https://github.com/ambro034/Policy_Depth_and_Width.git"
-import policy_DW as dw
 
-import pandas as pd
+      # Set Up
+      !pip install "git+https://github.com/ambro034/Policy_Depth_and_Width.git"
+      import policy_DW as dw
 
-## Load Data
-# Two Statements from Strings
-s1 = "In this case, the public utilities commission shall consult with the energy commission in calculating market prices and establishing other renewable portfolio standard policies--for this is the right thing."
-s2 = "The public utilities commission shall consult with the energy commission in establishing renewable portfolio standard policies, but this is the right thing."
+      import pandas as pd
 
-# Toy Data
+      ## Load Data
+      # Two Statements from Strings
+      s1 = "In this case, the public utilities commission shall consult with the energy commission in calculating market prices and establishing other renewable portfolio standard policies--for this is the right thing."
+      s2 = "The public utilities commission shall consult with the energy commission in establishing renewable portfolio standard policies, but this is the right thing."
 
-url = 'https://github.com/ambro034/Policy_Depth_and_Width/blob/main/fake_data_2.csv?raw=true'
-fake = pd.read_csv(url, encoding = "cp1252")
-fake.info()
+      # Toy Data
 
-# Colorado Net Metering Overtime
+      url = 'https://github.com/ambro034/Policy_Depth_and_Width/blob/main/fake_data_2.csv?raw=true'
+      fake = pd.read_csv(url, encoding = "cp1252")
+      fake.info()
 
-url = 'https://github.com/ambro034/Policy_Depth_and_Width/blob/main/Colorado_Net_Metering_Overtime.csv?raw=true'
-COL_NM = pd.read_csv(url, encoding = "cp1252")
-COL_NM.info()
+      # Colorado Net Metering Overtime
 
-# For reference we can look at the toy dataset 'fake'
-fake
+      url = 'https://github.com/ambro034/Policy_Depth_and_Width/blob/main/Colorado_Net_Metering_Overtime.csv?raw=true'
+      COL_NM = pd.read_csv(url, encoding = "cp1252")
+      COL_NM.info()
 
-## Construct and Run from Dataframe
+      # For reference we can look at the toy dataset 'fake'
+      fake
 
-mydata = dw.construct_dataset(fake,False,1,2012,2,2011)
-mydata
+      ## Construct and Run from Dataframe
 
-## Color-coded evaluation
+      mydata = dw.construct_dataset(fake,False,1,2012,2,2011)
+      mydata
 
-dw.reuse_color_coded(s1,s2,2)
+      ## Color-coded evaluation
 
-## Construct Reuse Dataframe
+      dw.reuse_color_coded(s1,s2,2)
 
-fake_data = dw.reuse_dataset_to_dataset(mydata,0,1,2,2)
-fake_data
+      ## Construct Reuse Dataframe
 
-## Run Loop for multiple comparisons of text reuse
+      fake_data = dw.reuse_dataset_to_dataset(mydata,0,1,2,2)
+      fake_data
 
-COL_looped_data = dw.sheet_loop(COL_NM,2)
-COL_looped_data
+      ## Run Loop for multiple comparisons of text reuse
 
-## Consolidated Information Output
+      COL_looped_data = dw.sheet_loop(COL_NM,2)
+      COL_looped_data
 
-COL_out1_AT = dw.add_term_measures(COL_looped_data,1)
-COL_out1_AT
+      ## Consolidated Information Output
 
-fake_out1_AT = dw.add_term_measures(fake_data,1)
-fake_out1_AT
+      COL_out1_AT = dw.add_term_measures(COL_looped_data,1)
+      COL_out1_AT
 
-## Full Information Output
+      fake_out1_AT = dw.add_term_measures(fake_data,1)
+      fake_out1_AT
 
-COL_out1_BT = dw.add_term_measures(COL_looped_data,2)
-COL_out1_BT
+      ## Full Information Output
 
-## Depth and Width Plot
+      COL_out1_BT = dw.add_term_measures(COL_looped_data,2)
+      COL_out1_BT
 
-dw.plot_term_add(COL_out1_AT, 0.21,0.5)
+      ## Depth and Width Plot
 
-dw.plot_term_add(fake_out1_AT, 0.21,0.5)
+      dw.plot_term_add(COL_out1_AT, 0.21,0.5)
 
-```
+      dw.plot_term_add(fake_out1_AT, 0.21,0.5)
+
+
 
 [Link to Google Collaboratory](https://colab.research.google.com/drive/1zz002Z0REg3mKiaYo5psdy8yvWrRLh2A?usp=sharing](https://colab.research.google.com/drive/1lH-aBrbnMOuaOC8xuKMb4bBAu1h7wrLB?usp=sharing)
     
