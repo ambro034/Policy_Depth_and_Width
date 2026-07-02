@@ -562,7 +562,7 @@ def add_term_measures(file_name, out):
   # Drop unneeded Sum_Xi variable
   Gini_df.drop(columns=['Term_Sum_Xi'], inplace=True)
   # Calculate Gini
-  Gini_df['Term_Gini'] = 1 - (Gini_df['Term_numerator'] / Gini_df['Term_denominator'])
+  Gini_df['Term_width'] = 1 - (Gini_df['Term_numerator'] / Gini_df['Term_denominator'])
   # Print the new DataFrame
 
   #### Addition Gini
@@ -575,7 +575,7 @@ def add_term_measures(file_name, out):
   # Drop unneeded Sum_Xi variable
   Gini_df.drop(columns=['Add_Sum_Xi'], inplace=True)
   # Calculate Gini
-  Gini_df['Add_Gini'] = 1 - (Gini_df['Add_numerator'] / Gini_df['Add_denominator'])
+  Gini_df['Add_width'] = 1 - (Gini_df['Add_numerator'] / Gini_df['Add_denominator'])
   # Print the new DataFrame
   #print(Gini_df)
 
@@ -626,10 +626,10 @@ def add_term_measures(file_name, out):
   for p in range(len(Gini_df)):
     if math.isnan(Gini_df['Term_depth'].iloc[p]) and Gini_df['Add_depth'].iloc[p] > 0:
       Gini_df.loc[p, 'Term_depth'] = 0
-      Gini_df.loc[p, 'Term_Gini'] = 1
+      Gini_df.loc[p, 'Term_width'] = 1
     if math.isnan(Gini_df['Add_depth'].iloc[p]) and Gini_df['Term_depth'].iloc[p]> 0:
       Gini_df.loc[p, 'Add_depth'] = 0
-      Gini_df.loc[p, 'Add_Gini'] = 1
+      Gini_df.loc[p, 'Add_width'] = 1
 
 ###########################
   #print(df_pivot['Ratio_of_Term'], df_pivot['Terminated_WC'], df_pivot['O_Text_WC'])
