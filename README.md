@@ -103,6 +103,7 @@ Where:
 
 ## Examples
 
+[Link to Google Collaboratory](https://colab.research.google.com/drive/1lH-aBrbnMOuaOC8xuKMb4bBAu1h7wrLB#scrollTo=KhppNH9xx9HC)
 
       # Set Up
       !pip install "git+https://github.com/ambro034/Policy_Depth_and_Width.git"
@@ -170,7 +171,7 @@ Where:
 
 
 
-[Link to Google Collaboratory](https://colab.research.google.com/https://colab.research.google.com/drive/1lH-aBrbnMOuaOC8xuKMb4bBAu1h7wrLB?usp=sharing)
+[Link to Google Collaboratory](https://colab.research.google.com/drive/1lH-aBrbnMOuaOC8xuKMb4bBAu1h7wrLB#scrollTo=KhppNH9xx9HC)
     
 ---
     
