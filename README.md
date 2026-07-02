@@ -37,49 +37,49 @@ import policy_DW as dw
 #### construct_dataset
 This is a function that takes a variably framed dataframe and conforms it to the structure useful to the following functions.
 
-    construct_dataset(data,id,new_year,new_year_num,old_year,old_year_num)
+`construct_dataset(data,id,new_year,new_year_num,old_year,old_year_num)`
 
 Where:
-  - *data* is the name of the dataframe
-  - *id* is the column position for Statement IDs in the dataframe. If the data set does not have an ID column, `False` can be supplied.
-  - *new_year* is the column position for Statement #1 in the dataframe
-  - *new_year_num* is the year identifier that will be used for Statement #1 in the dataframe
-  - *old_year* is the column position for Statement #2 in the dataframe
-  - *old_year_num* is the year identifier that will be used for Statement #2 in the dataframe
+  - `data` is the name of the dataframe
+  - `id` is the column position for Statement IDs in the dataframe. If the data set does not have an ID column, `False` can be supplied.
+  - `new_year` is the column position for Statement #1 in the dataframe
+  - `new_year_num` is the year identifier that will be used for Statement #1 in the dataframe
+  - `old_year` is the column position for Statement #2 in the dataframe
+  - `old_year_num` is the year identifier that will be used for Statement #2 in the dataframe
 
 
 ### Color-coded Reuse Evaluation
 This function returns output such that added text is in green, terminated in red, and maintained in black when comparing the old policy text (i.e., statement 2) to the new policy text (i.e., statement 1).
 
-    reuse_color_coded(s1,s2,l)
+`reuse_color_coded(s1,s2,l)`
 
 Where:
-  - *s1* is the new policy text (i.e., statement 1) to be entered
-  - *s2* is the old policy text (i.e., statement 2) to be entered
-  - *l* is the minimum n-gram length the function is observing (i.e., *l* = 2, two-word chucks)
+  - `s1` is the new policy text (i.e., statement 1) to be entered
+  - `s2` is the old policy text (i.e., statement 2) to be entered
+  - `l` is the minimum n-gram length the function is observing (i.e., `l` = 2, two-word chucks)
     
 ### Construct Reuse Dataset
 
 #### reuse_dataset_to_dataset
 This is a function returns pairs of statements from a dataframe, to a new dataframe representing the new statement, the added text, the reused test, the terminated text, and the old statement. For the added text, the reused test, the terminated text -- text is reported sequentially, so '[...]' are inserted where text is not sequentually relevent.
 
-    reuse_color_coded_dataset(data,id,new_year,old_year,l)
+`reuse_color_coded_dataset(data,id,new_year,old_year,l)`
 
 Where:
-  - *data* is the name of the dataframe
-  - *id* is ts the column position for Statement #1 in the dataframe
-  - *old_year* ishe column position for Statement IDs in the dataframe
-  - *new_year* i the column position for Statement #2 in the dataframe
-  - *l* is the minimum n-gram length the function is observing (i.e., *l* = 2, two-word chucks)
+  - `data` is the name of the dataframe
+  - `id` is ts the column position for Statement #1 in the dataframe
+  - `old_year` ishe column position for Statement IDs in the dataframe
+  - `new_year` i the column position for Statement #2 in the dataframe
+  - `l` is the minimum n-gram length the function is observing (i.e., `l` = 2, two-word chucks)
 
 #### sheet_loop
-This is a function returns a dataset of text reuse across two or more iterations of the same policies. This functions uses *reuse_dataset_to_dataset* to compare reused text between sequential policy versions, and uses *straight_merge* to merge these pair-wise comparisons into one large dataframe.
+This is a function returns a dataset of text reuse across two or more iterations of the same policies. This functions uses `reuse_dataset_to_dataset` to compare reused text between sequential policy versions, and uses `straight_merge` to merge these pair-wise comparisons into one large dataframe.
 
-    sheet_loop(TAB,l)
+`sheet_loop(TAB,l)`
 
 Where:
-  - *TAB* the file that is constructed in year-over-year amendments in columns and similar statements lined up within a row. For and example see *Colorado_Net_Metering_Overtime* and *Fake_data_2* included in the read me page.
-  - *l* is the minimum n-gram length the function is observing (i.e., l = 2, two-word chucks)
+  - `TAB` the file that is constructed in year-over-year amendments in columns and similar statements lined up within a row. For and example see `Colorado_Net_Metering_Overtime` and `Fake_data_2` included in the read me page.
+  - `l` is the minimum n-gram length the function is observing (i.e., l = 2, two-word chucks)
 
 
 ### Policy Depth and Width
@@ -170,7 +170,7 @@ Where:
 
 
 
-[Link to Google Collaboratory](https://colab.research.google.com/drive/1zz002Z0REg3mKiaYo5psdy8yvWrRLh2A?usp=sharing](https://colab.research.google.com/drive/1lH-aBrbnMOuaOC8xuKMb4bBAu1h7wrLB?usp=sharing)
+[Link to Google Collaboratory](https://colab.research.google.com/https://colab.research.google.com/drive/1lH-aBrbnMOuaOC8xuKMb4bBAu1h7wrLB?usp=sharing)
     
 ---
     
@@ -183,7 +183,7 @@ Where:
 
 ## Authors
 
-  - **Graham Ambrose** - 
+  - ``Graham Ambrose`` - 
     [ambro034](https://github.com/ambro034/)
 
 
