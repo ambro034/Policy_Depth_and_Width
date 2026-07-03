@@ -16,6 +16,7 @@ The current version of this package requires significant preprocessing before da
 
 
 | 2020 | 2015| 2010 |
+| --- | --- | --- |
 | This is an updated  policy regarding the use of the ‘Policy Depth and Width’ package | This is an updated policy regarding the use of the ‘Policy Depth and Width’ package | This is a policy regarding the use of the ‘Policy Depth and Width’ package|
 | You shall use the package the right way | You shall use the package the right way | You shall use the package the right way|
 |  | You must pre-process your data | You must pre-process your data  |
