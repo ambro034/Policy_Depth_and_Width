@@ -15,13 +15,19 @@ These instructions will outline installation, a description of the functions, as
 The current version of this package requires significant preprocessing before data can be processed by the commands below. In particular, dataframes must be constructed in the following format where each column represents a version of the policy, and each row represents a unique statement of the policy. The mock example below has three years of policy – i.e., the initial adoption in 2010, and two amendments in 2015 and 2020 – as well as four **unique** statements.
 
 
-| 2020 | 2015| 2010 |
-| --- | --- | --- |
-| This is an updated  policy regarding the use of the ‘Policy Depth and Width’ package | This is an updated policy regarding the use of the ‘Policy Depth and Width’ package | This is a policy regarding the use of the ‘Policy Depth and Width’ package|
-| You shall use the package the right way | You shall use the package the right way | You shall use the package the right way|
-|  | You must pre-process your data | You must pre-process your data  |
-| Each row must be a unique statements | Each row must be a unique statements |   |
-| You can do this in Excel or Google sheet and it must be saved as a CSV | You can do this in Excel or Google sheet and it must be saved as a CSV | You can do this in Excel or Google sheet and it must be saved as a CSV  |
+|ID | 2020 | 2015| 2010 |
+| ---| --- | --- | --- | 
+| 1 | This is an updated  policy regarding the use of the ‘Policy Depth and Width’ package | This is an updated policy regarding the use of the ‘Policy Depth and Width’ package | This is a policy regarding the use of the ‘Policy Depth and Width’ package|
+| 2 | You shall use the package the right way | You shall use the package the right way | You shall use the package the right way|
+| 3 |  | You must pre-process your data | You must pre-process your data  |
+| 4 | Each row must be a unique statements | Each row must be a unique statements |   |
+| 5 | You can do this in Excel or Google sheet and it must be saved as a CSV | You can do this in Excel or Google sheet and it must be saved as a CSV | You can do this in Excel or Google sheet and it must be saved as a CSV  |
+
+Statements #2 and #5 undergo no change across the three versions of the policy. Statement #1 is retained in each version, but does undergo a small calibration – i.e., ‘a policy’ → ‘an updated policy’. Statements #3 and #4 are the most critical for preprocessing. 
+
+Statement #3 is terminated in 2020, so subsequent cells in the row must be left blank. Because the comparisons of this package are row-based, if the cell is not left blank and Statement #4 in 2020 is placed in Statements #3’s position, the package will compare Statement #4 in 2020 – ‘Each row must be a unique statements’ – to Statement #3 in 2015 – ‘You must pre-process your data’. This mis-matched comparison will cascade throughout the rest of the dataset. 
+
+Statement #4 is added in 2015, so prior cells in the row must be left blank. This follows the same logic as that above.
 
 
 # Table of Contents
