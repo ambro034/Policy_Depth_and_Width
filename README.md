@@ -52,10 +52,9 @@ import policy_DW as dw
 
 ## Functions
 
-###Construct Base Datasets
+### Construct Base Datasets
 
-#### construct_dataset
-This is a function that takes a variably framed dataframe and conforms it to the structure useful to the following functions.
+This is a function that takes a variably framed dataframe and conforms it to the structure useful to the following functions. If you correctly pre-process your data, this command is not needed -- e.g., Colorado_Net_Metering_Overtime is correctly pre-processed.
 
 `construct_dataset(data,id,new_year,new_year_num,old_year,old_year_num)`
 
