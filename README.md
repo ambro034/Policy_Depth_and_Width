@@ -10,6 +10,19 @@ We offer a new approach for measuring dynamics of patching and packaging, propos
 
 These instructions will outline installation, a description of the functions, as well as identify examples.
 
+### IMPORTANT NOTE BEFORE CONTINUING
+
+The current version of this package requires significant preprocessing before data can be processed by the commands below. In particular, dataframes must be constructed in the following format where each column represents a version of the policy, and each row represents a unique statement of the policy. The mock example below has three years of policy – i.e., the initial adoption in 2010, and two amendments in 2015 and 2020 – as well as four **unique** statements.
+
+
+| 2020 | 2015| 2010 |
+| This is an updated  policy regarding the use of the ‘Policy Depth and Width’ package | This is an updated policy regarding the use of the ‘Policy Depth and Width’ package | This is a policy regarding the use of the ‘Policy Depth and Width’ package|
+| You shall use the package the right way | You shall use the package the right way | You shall use the package the right way|
+|  | You must pre-process your data | You must pre-process your data  |
+| Each row must be a unique statements | Each row must be a unique statements |   |
+| You can do this in Excel or Google sheet and it must be saved as a CSV | You can do this in Excel or Google sheet and it must be saved as a CSV | You can do this in Excel or Google sheet and it must be saved as a CSV  |
+
+
 # Table of Contents
 1. [Installing](#Installing)
 2. [Functions](#Functions)
@@ -63,7 +76,7 @@ Where:
 #### reuse_dataset_to_dataset
 This is a function returns pairs of statements from a dataframe, to a new dataframe representing the new statement, the added text, the reused test, the terminated text, and the old statement. For the added text, the reused test, the terminated text -- text is reported sequentially, so '[...]' are inserted where text is not sequentually relevent.
 
-`reuse_color_coded_dataset(data,id,new_year,old_year,l)`
+`reuse_dataset_to_dataset(data,id,new_year,old_year,l)`
 
 Where:
   - `data` is the name of the dataframe
